@@ -6,6 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -25,8 +28,15 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
 
         View listitemview = convertView;
         if(listitemview == null){
-            listitemview = LayoutInflater.from(getContext()).inflate(1234,parent,false);
+            listitemview = LayoutInflater.from(getContext()).inflate(R.layout.movie_list_item,parent,false);
         }
-        return super.getView(position, convertView, parent);
+
+        final Movie currentMovie = getItem(position);
+
+        ImageView moviePoster = (ImageView) listitemview.findViewById(R.id.poster_id);
+
+        Picasso.with(getContext()).load(currentMovie.getPoster()).into(moviePoster);
+
+        return listitemview;
     }
 }

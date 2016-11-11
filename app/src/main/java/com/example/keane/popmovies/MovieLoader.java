@@ -2,8 +2,10 @@ package com.example.keane.popmovies;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.database.Cursor;
+import android.util.Log;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -11,13 +13,14 @@ import java.util.List;
  */
 
 public class MovieLoader extends AsyncTaskLoader {
+    private static final String LOG_TAG = MovieLoader.class.getSimpleName();
 
     private List<Movie> mMovieList;
-    private Cursor mCursor;
+    private String mUrl;
 
-    public MovieLoader(Context context, Cursor c){
+    public MovieLoader(Context context, String url){
         super(context);
-        mCursor = c;
+        mUrl = url;
     }
 
     @Override
@@ -27,6 +30,20 @@ public class MovieLoader extends AsyncTaskLoader {
 
     @Override
     public List<Movie> loadInBackground() {
-        return null;
+        if (mUrl == null){
+            return null;
+        }
+
+        URL url = QueryUtils.createUrl(mUrl);
+        String jsonResponse = "";
+        try{
+            jsonResponse=QueryUtils.makeHttpRequest(url);
+        }catch (IOException e){
+            Log.e(LOG_TAG,"Error making request");
+        }
+
+        List<Movie> movies = QueryUtils.extractMovies(jsonResponse);
+        return movies;
     }
+
 }

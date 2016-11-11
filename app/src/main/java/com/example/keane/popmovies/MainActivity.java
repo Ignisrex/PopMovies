@@ -1,15 +1,22 @@
 package com.example.keane.popmovies;
 
+import android.content.Loader;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.GridView;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Object> {
+
+    private static final String API_KEY = "";
+    private static final String BASE_REQUEST_URL= "";
+    private static final int MOVIE_LOADER_ID = 1;
+    private MovieAdapter movieAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,14 +25,16 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        GridView movieGridView = (GridView) findViewById(R.id.content_main);
+        movieAdapter = new MovieAdapter(this,new ArrayList<Movie>());
+
+        movieGridView.setAdapter(movieAdapter);
+
+
+        android.app.LoaderManager loaderManager = getLoaderManager();
+        loaderManager.initLoader(MOVIE_LOADER_ID ,null, this);
+
+
     }
 
     @Override
@@ -48,5 +57,24 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Loader<List<Movie>> onCreateLoader(int i, Bundle bundle) {
+        return new MovieLoader(this,BASE_REQUEST_URL);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Movie>> loader, ArrayList<Movie> movies) {
+        movieAdapter.clear();
+        if (movies != null && !movies.isEmpty()){
+            movieAdapter.addAll(movies);
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Movie>> loader) {
+        movieAdapter.clear();
     }
 }
