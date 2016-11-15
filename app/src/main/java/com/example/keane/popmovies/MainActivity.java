@@ -11,10 +11,10 @@ import android.widget.GridView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Object> {
+public class MainActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<List<Movie>> {
 
-    private static final String API_KEY = "";
-    private static final String BASE_REQUEST_URL= "";
+    private static final String API_KEY = "***REMOVED***";
+    private static final String BASE_REQUEST_URL= "https://api.themoviedb.org/3/movie/popular?api_key="+ API_KEY +"&language=en-US&page=1";
     private static final int MOVIE_LOADER_ID = 1;
     private MovieAdapter movieAdapter;
 
@@ -65,12 +65,11 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Movie>> loader, ArrayList<Movie> movies) {
+    public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> movies) {
         movieAdapter.clear();
         if (movies != null && !movies.isEmpty()){
             movieAdapter.addAll(movies);
         }
-
     }
 
     @Override

@@ -34,8 +34,8 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         final Movie currentMovie = getItem(position);
 
         ImageView moviePoster = (ImageView) listitemview.findViewById(R.id.poster_id);
-
-        Picasso.with(getContext()).load(currentMovie.getPoster()).into(moviePoster);
+        String imageUrl = "http://image.tmdb.org/t/p/w185/"+ currentMovie.getPoster();
+        Picasso.with(getContext()).load(imageUrl).into(moviePoster);
 
         return listitemview;
     }
