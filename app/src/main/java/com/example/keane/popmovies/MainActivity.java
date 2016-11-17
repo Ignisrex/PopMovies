@@ -3,10 +3,11 @@ package com.example.keane.popmovies;
 import android.content.Loader;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.GridView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
     private static final String BASE_REQUEST_URL= "https://api.themoviedb.org/3/movie/popular?api_key="+ API_KEY +"&language=en-US&page=1";
     private static final int MOVIE_LOADER_ID = 1;
     private MovieAdapter movieAdapter;
+    private ArrayList<Movie> mMovies ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,16 +27,16 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        GridView movieGridView = (GridView) findViewById(R.id.content_main);
-        movieAdapter = new MovieAdapter(this,new ArrayList<Movie>());
+        mMovies = new ArrayList<Movie>();
+        RecyclerView rvPosters = (RecyclerView) findViewById(R.id.recycleView);
+        movieAdapter = new MovieAdapter(this, mMovies);
 
-        movieGridView.setAdapter(movieAdapter);
-
+        rvPosters.setAdapter(movieAdapter);
+        StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        rvPosters.setLayoutManager(gridLayoutManager);
 
         android.app.LoaderManager loaderManager = getLoaderManager();
         loaderManager.initLoader(MOVIE_LOADER_ID ,null, this);
-
-
     }
 
     @Override
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -66,14 +69,16 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
     @Override
     public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> movies) {
-        movieAdapter.clear();
+        mMovies.clear();
         if (movies != null && !movies.isEmpty()){
-            movieAdapter.addAll(movies);
+            mMovies.addAll(movies);
         }
+        movieAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onLoaderReset(Loader<List<Movie>> loader) {
-        movieAdapter.clear();
+        mMovies.clear();
+        movieAdapter.notifyDataSetChanged();
     }
 }
