@@ -8,13 +8,13 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<List<Movie>> {
 
-    private static final String API_KEY = "***REMOVED***";
+
+    private static final String API_KEY = ApiKey.get();
     private static final String BASE_REQUEST_URL= "https://api.themoviedb.org/3/movie/popular?api_key="+ API_KEY +"&language=en-US&page=1";
     private static final int MOVIE_LOADER_ID = 1;
     private MovieAdapter movieAdapter;
