@@ -18,6 +18,7 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
     private Context mContext;
     private List<Movie> mMovies;
+    private OnItemClickListener listener;
 
     public MovieAdapter(Context context, List<Movie> movies){
         mMovies = movies;
@@ -28,13 +29,33 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         return mContext;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public interface OnItemClickListener {
+        void onItemClick(View itemView, int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder{
         public ImageView posterImage;
 
         public ViewHolder(View viewItem){
             super(viewItem);
 
             posterImage = (ImageView) viewItem.findViewById(R.id.poster_id);
+
+            viewItem.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    if(listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onItemClick(itemView,position);
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -56,6 +77,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         String imageUrl = "http://image.tmdb.org/t/p/w185/"+ movie.getPoster();
         Picasso.with(getContext()).load(imageUrl).into(imageView);
     }
+
 
     @Override
     public int getItemCount() {
